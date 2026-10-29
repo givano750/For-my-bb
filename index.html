@@ -75,7 +75,6 @@
       pointer-events: none;
     }
 
-    /* Realistic Craters & Rim Aura */
     .moon-container::before {
       content: '';
       position: absolute;
@@ -107,7 +106,7 @@
     }
 
     /* ==========================================================================
-       3. UNENCLOSED LONG MESSAGE PLACEHOLDER (NO CONTAINER/BOX)
+       3. UNENCLOSED LONG MESSAGE (WITH SMOOTH UNLOCK TRANSITION)
        ========================================================================== */
     .sky-message {
       position: absolute;
@@ -118,11 +117,22 @@
       color: #f0f9ff;
       user-select: text;
       outline: none;
-      /* CRITICAL: No container background, border, card, or box wrapper */
       background: transparent !important;
       border: none !important;
       box-shadow: none !important;
       padding: 0 !important;
+      opacity: 0;
+      filter: blur(12px);
+      pointer-events: none;
+      transition: opacity 1.2s ease, filter 1.2s ease, transform 1.2s ease;
+      transform: translateY(15px);
+    }
+
+    .sky-message.unlocked {
+      opacity: 1;
+      filter: blur(0px);
+      pointer-events: auto;
+      transform: translateY(0);
     }
 
     .sky-message-title {
@@ -159,6 +169,158 @@
       transition: all 0.3s ease;
     }
 
+    /* ==========================================================================
+       4. ELEGANT PASSWORD OVERLAY LOCK SCREEN
+       ========================================================================== */
+    .password-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(3, 7, 18, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+
+    .password-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .password-card {
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid rgba(186, 230, 253, 0.25);
+      border-radius: 24px;
+      padding: 2.8rem 2.2rem;
+      width: 90%;
+      max-width: 440px;
+      text-align: center;
+      box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.8),
+        0 0 30px rgba(56, 189, 248, 0.2),
+        inset 0 0 15px rgba(186, 230, 253, 0.08);
+      position: relative;
+      animation: cardAppear 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes cardAppear {
+      from { opacity: 0; transform: scale(0.9) translateY(20px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .password-card.shake {
+      animation: shake 0.4s ease-in-out;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-12px); }
+      40% { transform: translateX(12px); }
+      60% { transform: translateX(-8px); }
+      80% { transform: translateX(8px); }
+    }
+
+    .lock-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.8rem;
+      filter: drop-shadow(0 0 10px rgba(186, 230, 253, 0.6));
+    }
+
+    .password-title {
+      font-family: 'Great Vibes', cursive;
+      font-size: 2.8rem;
+      color: #ffffff;
+      margin-bottom: 0.4rem;
+      text-shadow: 0 0 15px rgba(186, 230, 253, 0.8), 0 0 25px rgba(56, 189, 248, 0.4);
+    }
+
+    .password-subtitle {
+      font-size: 1.15rem;
+      color: #bae6fd;
+      margin-bottom: 1.8rem;
+      font-weight: 400;
+    }
+
+    .password-input-wrapper {
+      position: relative;
+      margin-bottom: 1.2rem;
+    }
+
+    .password-input {
+      width: 100%;
+      padding: 0.85rem 1.2rem;
+      border-radius: 50px;
+      border: 1px solid rgba(186, 230, 253, 0.35);
+      background: rgba(2, 6, 23, 0.6);
+      color: #f0f9ff;
+      font-size: 1.1rem;
+      font-family: 'Cormorant Garamond', serif;
+      text-align: center;
+      outline: none;
+      transition: all 0.3s ease;
+      letter-spacing: 2px;
+    }
+
+    .password-input::placeholder {
+      color: rgba(186, 230, 253, 0.45);
+      letter-spacing: normal;
+    }
+
+    .password-input:focus {
+      border-color: #38bdf8;
+      box-shadow: 0 0 18px rgba(56, 189, 248, 0.4);
+      background: rgba(2, 6, 23, 0.85);
+    }
+
+    .unlock-btn {
+      width: 100%;
+      padding: 0.85rem;
+      border-radius: 50px;
+      border: none;
+      background: linear-gradient(135deg, #0284c7 0%, #38bdf8 50%, #f472b6 100%);
+      color: #ffffff;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(56, 189, 248, 0.35);
+      transition: all 0.3s ease;
+    }
+
+    .unlock-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(56, 189, 248, 0.6);
+      filter: brightness(1.1);
+    }
+
+    .unlock-btn:active {
+      transform: translateY(0);
+    }
+
+    .password-error {
+      min-height: 24px;
+      font-size: 1rem;
+      color: #f472b6;
+      margin-top: 0.8rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .password-error.visible {
+      opacity: 1;
+    }
+
+    .password-hint {
+      margin-top: 1rem;
+      font-size: 0.95rem;
+      color: rgba(186, 230, 253, 0.6);
+      font-style: italic;
+    }
+
     /* Subtle Planting Hint Floating Near Ground */
     .garden-hint {
       position: fixed;
@@ -182,7 +344,7 @@
     }
 
     /* ==========================================================================
-       4. INTERACTIVE FLOWERBED & GARDEN LAYOUT
+       5. INTERACTIVE FLOWERBED & GARDEN LAYOUT
        ========================================================================== */
     .garden-viewport {
       position: fixed;
@@ -449,7 +611,7 @@
     .long-g .leaf--1 { --w: 5vmin; --h: 60vmin; animation: leaf-ans-1 4s linear infinite; }
     .long-g .leaf--2 { --w: 10vmin; --h: 40vmin; left: -0.5vmin; bottom: 5vmin; transform-origin: bottom left; transform: rotateY(-180deg); animation: leaf-ans-2 3s linear infinite; }
 
-    /* Keyframe Animations from Art Reference */
+    /* Keyframe Animations */
     @keyframes leaf-ans-1 {
       0%, 100% { transform: rotate(-5deg) scale(1); }
       50% { transform: rotate(5deg) scale(1.1); }
@@ -518,6 +680,23 @@
 </head>
 
 <body>
+  <!-- PASSWORD OVERLAY LOCK SCREEN -->
+  <div id="passwordOverlay" class="password-overlay">
+    <div class="password-card" id="passwordCard">
+      <div class="lock-icon">🔒</div>
+      <h2 class="password-title">A Secret Message Awaits</h2>
+      <p class="password-subtitle">Please enter the password to unlock this message</p>
+      
+      <div class="password-input-wrapper">
+        <input type="password" id="passwordInput" class="password-input" placeholder="Enter password..." autocomplete="off" autofocus />
+      </div>
+      
+      <button id="unlockBtn" class="unlock-btn">Unlock Message ❤️</button>
+      <div id="passwordError" class="password-error">Maliii bub HAHAHAHA</div>
+      <div class="password-hint">Hint: <i>your favorite word when we first talked</i></div>
+    </div>
+  </div>
+
   <!-- Deep Cosmic Sky Backdrop -->
   <div class="sky-background"></div>
 
@@ -529,8 +708,8 @@
     <div class="moon-aura"></div>
   </div>
 
-  <!-- Unenclosed Long Message Placeholder (Floating Directly on Night Sky) -->
-  <div class="sky-message" contenteditable="true" spellcheck="false" title="Click to edit poetic message">
+  <!-- SKY MESSAGE (PROTECTED UNTIL UNLOCKED) -->
+  <div id="skyMessage" class="sky-message" contenteditable="true" spellcheck="false" title="Click to edit poetic message">
     <h1 class="sky-message-title">To My Dearest Kassyqt,</h1>
     <div class="sky-message-body">
       <p>
@@ -541,7 +720,7 @@
       </p>
     </div>
     <br>
-    <h1 style="text-indent: 5.5em;" class="sky-message-title">Love, Gi</h1>
+    <h1 style="text-indent: 5.5em;" class="sky-message-title">Love, Gian</h1>
   </div>
 
   <!-- Subtle Planting Hint Overlay -->
@@ -648,10 +827,51 @@
   </div>
 
   <!-- ==========================================================================
-       5. JAVASCRIPT ANIMATION ENGINE & INTERACTIVITY
+       6. JAVASCRIPT ANIMATION ENGINE & INTERACTIVITY
        ========================================================================== -->
   <script>
     window.addEventListener('DOMContentLoaded', () => {
+      /* ----------------------------------------------------------------------
+         A. PASSWORD PROTECTION LOGIC
+         ---------------------------------------------------------------------- */
+      const passwordOverlay = document.getElementById('passwordOverlay');
+      const passwordCard = document.getElementById('passwordCard');
+      const passwordInput = document.getElementById('passwordInput');
+      const unlockBtn = document.getElementById('unlockBtn');
+      const passwordError = document.getElementById('passwordError');
+      const skyMessage = document.getElementById('skyMessage');
+
+      const VALID_PASSWORDS = ['mygosh', 'owemji', 'omg', 'goshie'];
+
+      function checkPassword() {
+        const value = passwordInput.value.trim().toLowerCase();
+        if (VALID_PASSWORDS.includes(value)) {
+          // Unlock successful
+          passwordError.classList.remove('visible');
+          passwordOverlay.classList.add('hidden');
+          skyMessage.classList.add('unlocked');
+
+          // Trigger magic burst on canvas
+          spawnSparkles(window.innerWidth / 2, window.innerHeight / 3, 50, '#f472b6');
+        } else {
+          // Password failed
+          passwordError.classList.add('visible');
+          passwordCard.classList.remove('shake');
+          void passwordCard.offsetWidth; // Trigger reflow
+          passwordCard.classList.add('shake');
+          passwordInput.value = '';
+          passwordInput.focus();
+        }
+      }
+
+      unlockBtn.addEventListener('click', checkPassword);
+      passwordInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') checkPassword();
+      });
+
+      /* ----------------------------------------------------------------------
+         B. CANVAS & PARTICLES ENGINE
+         ---------------------------------------------------------------------- */
       const canvas = document.getElementById('fxCanvas');
       const ctx = canvas.getContext('2d');
 
@@ -665,7 +885,7 @@
       });
 
       /* ----------------------------------------------------------------------
-         A. STARRY NIGHT SKY ENGINE
+         C. STARRY NIGHT SKY ENGINE
          ---------------------------------------------------------------------- */
       const stars = [];
       const STAR_COUNT = 220;
@@ -705,7 +925,7 @@
       }
 
       /* ----------------------------------------------------------------------
-         B. METEOR SHOWER ENGINE
+         D. METEOR SHOWER ENGINE
          ---------------------------------------------------------------------- */
       const meteors = [];
 
@@ -713,7 +933,7 @@
         const startX = Math.random() * (width * 0.8);
         const startY = Math.random() * (height * 0.35);
         const length = Math.random() * 140 + 80;
-        const angle = Math.PI / 4 + (Math.random() * 0.2 - 0.1); // ~45 deg
+        const angle = Math.PI / 4 + (Math.random() * 0.2 - 0.1);
         const speed = Math.random() * 12 + 10;
 
         meteors.push({
@@ -730,7 +950,6 @@
         });
       }
 
-      // Periodically trigger meteors at random timing
       setInterval(() => {
         if (Math.random() < 0.65) {
           spawnMeteor();
@@ -773,7 +992,6 @@
           ctx.shadowColor = m.color;
           ctx.stroke();
 
-          // Glowing meteor head particle
           ctx.beginPath();
           ctx.arc(m.x, m.y, m.width * 1.5, 0, Math.PI * 2);
           ctx.fillStyle = '#ffffff';
@@ -784,7 +1002,7 @@
       }
 
       /* ----------------------------------------------------------------------
-         C. FIREFLIES ENGINE
+         E. FIREFLIES ENGINE
          ---------------------------------------------------------------------- */
       const fireflies = [];
       const FIREFLY_COUNT = 45;
@@ -814,12 +1032,10 @@
         for (let i = 0; i < fireflies.length; i++) {
           const f = fireflies[i];
 
-          // Sine wave organic movement pathing
           f.angle += (Math.random() - 0.5) * 0.12;
           f.x += Math.cos(f.angle) * f.speed;
-          f.y += Math.sin(f.angle) * f.speed * 0.7 - 0.15; // Gentle upward drift
+          f.y += Math.sin(f.angle) * f.speed * 0.7 - 0.15;
 
-          // Gentle mouse evasion reaction
           const dx = f.x - mouseX;
           const dy = f.y - mouseY;
           const dist = Math.sqrt(dx * dx + dy * dy);
@@ -828,13 +1044,11 @@
             f.y += (dy / dist) * 2;
           }
 
-          // Screen wrapping
           if (f.x < -20) f.x = width + 20;
           if (f.x > width + 20) f.x = -20;
           if (f.y < height * 0.2) f.y = height + 10;
           if (f.y > height + 20) f.y = height * 0.4;
 
-          // Glowing pulse calculations
           f.pulse += f.pulseSpeed;
           const alpha = (Math.sin(f.pulse) + 1) / 2 * 0.8 + 0.2;
 
@@ -847,7 +1061,6 @@
           ctx.shadowColor = f.color;
           ctx.fill();
 
-          // Outer soft halo
           ctx.beginPath();
           ctx.arc(f.x, f.y, f.radius * 3.5, 0, Math.PI * 2);
           ctx.fillStyle = f.color;
@@ -858,7 +1071,7 @@
       }
 
       /* ----------------------------------------------------------------------
-         D. MAGIC CLICK SPARKLES & BURSTS
+         F. MAGIC CLICK SPARKLES & BURSTS
          ---------------------------------------------------------------------- */
       const sparkles = [];
 
@@ -884,7 +1097,7 @@
           const s = sparkles[i];
           s.x += s.vx;
           s.y += s.vy;
-          s.vy += 0.06; // subtle gravity
+          s.vy += 0.06;
           s.life++;
 
           const alpha = 1 - s.life / s.maxLife;
@@ -906,18 +1119,18 @@
       }
 
       /* ----------------------------------------------------------------------
-         E. DYNAMIC FLOWER SPAWNING & INTERACTION
+         G. DYNAMIC FLOWER SPAWNING & INTERACTION
          ---------------------------------------------------------------------- */
       const flowerbed = document.getElementById('flowerbed');
       const groundZone = document.getElementById('groundZone');
       const hint = document.getElementById('gardenHint');
 
       const PALETTES = [
-        { c1: '#0284c7', c2: '#bae6fd', glow: '#38bdf8' }, // Bioluminescent Ice
-        { c1: '#7e22ce', c2: '#f0abfc', glow: '#c084fc' }, // Enchanted Amethyst
-        { c1: '#be185d', c2: '#fbcfe8', glow: '#f472b6' }, // Velvet Rose
-        { c1: '#059669', c2: '#a7f3d0', glow: '#34d399' }, // Emerald Glow
-        { c1: '#d97706', c2: '#fef08a', glow: '#facc15' }  // Golden Solar
+        { c1: '#0284c7', c2: '#bae6fd', glow: '#38bdf8' },
+        { c1: '#7e22ce', c2: '#f0abfc', glow: '#c084fc' },
+        { c1: '#be185d', c2: '#fbcfe8', glow: '#f472b6' },
+        { c1: '#059669', c2: '#a7f3d0', glow: '#34d399' },
+        { c1: '#d97706', c2: '#fef08a', glow: '#facc15' }
       ];
 
       groundZone.addEventListener('click', (e) => {
@@ -932,8 +1145,8 @@
 
       function plantNewFlower(xPercent, clickX, clickY) {
         const palette = PALETTES[Math.floor(Math.random() * PALETTES.length)];
-        const stemH = Math.floor(Math.random() * 12 + 22); // 22vmin to 34vmin
-        const rot = Math.floor(Math.random() * 26 - 13); // -13deg to +13deg
+        const stemH = Math.floor(Math.random() * 12 + 22);
+        const rot = Math.floor(Math.random() * 26 - 13);
 
         const flowerDiv = document.createElement('div');
         flowerDiv.className = 'flower';
@@ -966,9 +1179,7 @@
           </div>
         `;
 
-        // Add interactive sway and sparkles on click
         attachFlowerInteractivity(flowerDiv);
-
         flowerbed.appendChild(flowerDiv);
         spawnSparkles(clickX, clickY, 25, palette.glow);
       }
@@ -977,7 +1188,7 @@
         elem.addEventListener('click', (e) => {
           e.stopPropagation();
           elem.classList.remove('sway-burst');
-          void elem.offsetWidth; // Trigger reflow
+          void elem.offsetWidth;
           elem.classList.add('sway-burst');
 
           const rect = elem.getBoundingClientRect();
@@ -985,17 +1196,15 @@
         });
       }
 
-      // Attach interaction to pre-existing flowers
       document.querySelectorAll('.flower').forEach(attachFlowerInteractivity);
 
       /* ----------------------------------------------------------------------
-         F. MAIN ANIMATION LOOP
+         H. MAIN ANIMATION LOOP
          ---------------------------------------------------------------------- */
       initStars();
 
       function animate(timestamp) {
         ctx.clearRect(0, 0, width, height);
-
         const time = timestamp * 0.001;
 
         updateAndDrawStars(time);
@@ -1010,4 +1219,4 @@
     });
   </script>
 </body>
-</html>
+</html> 
